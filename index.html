@@ -1,0 +1,2100 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>독서 습관 트래커 · 10분 / 10페이지 습관</title>
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="독서트래커" />
+<style>
+  :root {
+    --bg: #F5F6F5;
+    --card: #FFFFFF;
+    --card-sub: #F2F4F2;
+    --text-main: #1C1E1C;
+    --text-sub: #6E746E;
+    --text-muted: #9AA09A;
+    --line: #E6E9E6;
+    --accent: #4E723C;
+    --accent-soft: #EBF1E7;
+    --g1: #C4D4BA;
+    --g2: #98B388;
+    --g3: #70945C;
+    --g4: #4E723C;
+    --g5: #324C25;
+    --danger: #C94A4A;
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm: 10px;
+  }
+
+  * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", sans-serif;
+    background-color: var(--bg);
+    color: var(--text-main);
+    font-size: 13px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: 96px;
+  }
+
+  .app-shell {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 16px 16px 24px;
+  }
+
+  /* Header */
+  .top-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 2px 16px;
+  }
+
+  .header-left {
+    text-align: left;
+  }
+
+  .header-date {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-sub);
+    margin-bottom: 2px;
+  }
+
+  .header-title {
+    font-size: 21px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-main);
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .streak-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    padding: 6px 11px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-main);
+    white-space: nowrap;
+  }
+
+  .icon-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--text-main);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 15px;
+  }
+
+  .icon-btn:active {
+    background: var(--card-sub);
+  }
+
+  /* Cards & Typography Hierarchy (Subheading vs Body/Caption) */
+  .card {
+    background: var(--card);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    text-align: left;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .card-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-main);
+    letter-spacing: -0.01em;
+    line-height: 1.35;
+  }
+
+  .card-sub {
+    font-size: 11.5px;
+    font-weight: 400;
+    color: var(--text-sub);
+    margin-top: 3px;
+    line-height: 1.45;
+  }
+
+  .body-text {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text-sub);
+    line-height: 1.5;
+  }
+
+  /* Habit Status Banner */
+  .status-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: var(--card);
+    border-radius: var(--radius-lg);
+    padding: 18px 20px;
+    margin-bottom: 16px;
+    border: 1px solid var(--line);
+    transition: all 0.2s ease;
+    text-align: left;
+  }
+
+  .status-banner.achieved {
+    background: var(--accent-soft);
+    border-color: var(--g2);
+  }
+
+  .status-badge {
+    display: inline-block;
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: var(--card-sub);
+    color: var(--text-sub);
+    margin-bottom: 6px;
+  }
+
+  .status-banner.achieved .status-badge {
+    background: var(--accent);
+    color: #FFFFFF;
+  }
+
+  .status-heading {
+    font-size: 15.5px;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+
+  .status-desc {
+    font-size: 11.5px;
+    font-weight: 400;
+    color: var(--text-sub);
+    margin-top: 3px;
+  }
+
+  .status-pills {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .mini-check {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 8px;
+    background: var(--card-sub);
+    color: var(--text-sub);
+    white-space: nowrap;
+    text-align: left;
+  }
+
+  .mini-check.done {
+    background: var(--card);
+    color: var(--accent);
+    border: 1px solid var(--g2);
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 36px;
+    padding: 0 13px;
+    border-radius: var(--radius-sm);
+    border: none;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.15s ease, transform 0.1s ease;
+  }
+
+  .btn:active {
+    transform: scale(0.98);
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #FFFFFF;
+  }
+
+  .btn-soft {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  .btn-ghost {
+    background: var(--card-sub);
+    color: var(--text-main);
+  }
+
+  .btn-danger-soft {
+    background: #FDECEC;
+    color: var(--danger);
+  }
+
+  .btn-full {
+    width: 100%;
+    height: 42px;
+    font-size: 13px;
+  }
+
+  /* Inputs & Selects */
+  .book-select-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .select-wrap {
+    flex: 1;
+    min-width: 0;
+  }
+
+  select.clean-select,
+  input.clean-input {
+    width: 100%;
+    height: 38px;
+    padding: 0 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+    background: var(--card-sub);
+    color: var(--text-main);
+    font-size: 13px;
+    font-weight: 500;
+    outline: none;
+  }
+
+  select.clean-select:focus,
+  input.clean-input:focus {
+    border-color: var(--accent);
+    background: var(--card);
+  }
+
+  /* Search Lookup Box inside Modal */
+  .search-panel {
+    background: var(--card-sub);
+    border-radius: var(--radius-md);
+    padding: 12px;
+    margin-bottom: 16px;
+  }
+
+  .search-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  .search-results {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 170px;
+    overflow-y: auto;
+  }
+
+  .search-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 9px 12px;
+    background: var(--card);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .search-item:active {
+    background: var(--accent-soft);
+  }
+
+  .search-item-title {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+
+  .search-item-meta {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--text-sub);
+    margin-top: 2px;
+  }
+
+  .search-item-pages {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  /* Device Chips */
+  .device-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-bottom: 12px;
+  }
+
+  .device-chip {
+    height: 32px;
+    padding: 0 11px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--text-sub);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .device-chip.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #FFFFFF;
+  }
+
+  /* Today Habit Summary Box */
+  .equiv-box {
+    background: var(--card-sub);
+    border-radius: var(--radius-md);
+    padding: 13px 15px;
+    margin-bottom: 14px;
+  }
+
+  .equiv-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  .equiv-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-sub);
+  }
+
+  .equiv-value {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .equiv-breakdown {
+    font-size: 11.5px;
+    font-weight: 400;
+    color: var(--text-sub);
+    line-height: 1.45;
+  }
+
+  /* Optional Timer Box */
+  .timer-box {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    background: #FAFBF9;
+  }
+
+  .timer-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .timer-tag {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--text-sub);
+  }
+
+  .timer-display {
+    font-size: 30px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+    color: var(--text-main);
+    text-align: center;
+    padding: 6px 0 12px;
+  }
+
+  .timer-display.running {
+    color: var(--accent);
+  }
+
+  .timer-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .timer-actions .btn {
+    flex: 1;
+  }
+
+  /* 24-Hour 5-Min Time Tracker Grid */
+  .time-grid-wrap {
+    margin-top: 4px;
+  }
+
+  .time-grid-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .time-grid-caption {
+    font-size: 11.5px;
+    font-weight: 400;
+    color: var(--text-sub);
+  }
+
+  .time-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    max-height: 236px;
+    overflow-y: auto;
+    padding-right: 2px;
+  }
+
+  .time-row {
+    display: grid;
+    grid-template-columns: 32px repeat(12, 1fr);
+    align-items: center;
+    gap: 3px;
+  }
+
+  .time-hour {
+    font-size: 10.5px;
+    font-weight: 500;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .time-cell {
+    height: 13px;
+    border-radius: 3px;
+    background: var(--card-sub);
+    transition: background-color 0.15s ease;
+  }
+
+  .time-cell.lvl-1 { background: var(--g1); }
+  .time-cell.lvl-2 { background: var(--g2); }
+  .time-cell.lvl-3 { background: var(--g3); }
+  .time-cell.lvl-4 { background: var(--g4); }
+  .time-cell.lvl-5 { background: var(--g5); }
+
+  /* Per-Book Accordion inside "오늘 기록" 10p Grid Card */
+  .book-accordion-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .book-accordion-item {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: var(--card);
+    overflow: hidden;
+  }
+
+  .book-accordion-trigger {
+    width: 100%;
+    background: var(--card-sub);
+    border: none;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .book-accordion-title {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+
+  .book-accordion-meta {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--text-sub);
+    margin-top: 2px;
+  }
+
+  .book-accordion-toggle-label {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  .book-accordion-body {
+    padding: 14px;
+    display: none;
+  }
+
+  .book-accordion-body.open {
+    display: block;
+  }
+
+  /* 10p Division Grid */
+  .page-grid-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 11.5px;
+    font-weight: 400;
+    color: var(--text-sub);
+    margin-bottom: 12px;
+    background: var(--card-sub);
+    padding: 9px 12px;
+    border-radius: var(--radius-sm);
+  }
+
+  .page-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+  }
+
+  .page-cell {
+    height: 38px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--text-sub);
+    font-size: 12.5px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.08s ease;
+  }
+
+  .page-cell:active {
+    transform: scale(0.95);
+  }
+
+  .page-cell.filled {
+    border-color: transparent;
+    font-weight: 700;
+  }
+
+  .page-cell.lvl-1 { background: var(--g1); color: #1C1E1C; }
+  .page-cell.lvl-2 { background: var(--g2); color: #1C1E1C; }
+  .page-cell.lvl-3 { background: var(--g3); color: #FFFFFF; }
+  .page-cell.lvl-4 { background: var(--g4); color: #FFFFFF; }
+  .page-cell.lvl-5 { background: var(--g5); color: #FFFFFF; }
+
+  /* Segment History Logs */
+  .log-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .log-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 11px 13px;
+    border-radius: var(--radius-sm);
+    background: var(--card-sub);
+  }
+
+  .log-main {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text-main);
+  }
+
+  .log-sub {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--text-sub);
+    margin-top: 2px;
+  }
+
+  .log-badge {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 4px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+
+  /* Monthly Stats & Calendar */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .stat-box {
+    background: var(--card);
+    border-radius: var(--radius-md);
+    padding: 14px 12px;
+    text-align: left;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--text-sub);
+    margin-bottom: 4px;
+  }
+
+  .stat-val {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+
+  .cal-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .cal-month-title {
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .cal-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .cal-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+  }
+
+  .cal-day {
+    aspect-ratio: 1 / 1.05;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    background: var(--card-sub);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
+    padding: 4px;
+  }
+
+  .cal-day.empty {
+    background: transparent;
+    cursor: default;
+  }
+
+  .cal-day.selected {
+    border-color: var(--text-main);
+    box-shadow: 0 0 0 1px var(--text-main);
+  }
+
+  .cal-day-num {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text-main);
+  }
+
+  .cal-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: transparent;
+  }
+
+  .cal-day.achieved-1 { background: var(--accent-soft); }
+  .cal-day.achieved-1 .cal-dot { background: var(--g3); }
+  .cal-day.achieved-2 { background: var(--g1); }
+  .cal-day.achieved-2 .cal-dot { background: var(--g5); }
+
+  /* Bookshelf Settings */
+  .form-group {
+    margin-bottom: 14px;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 6px;
+  }
+
+  .form-hint {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--text-sub);
+    margin-top: 4px;
+  }
+
+  .device-row {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr auto;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .book-card-item {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 15px 16px;
+    margin-bottom: 12px;
+    background: var(--card);
+  }
+
+  .book-item-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .book-item-title {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+
+  .book-item-meta {
+    font-size: 11.5px;
+    font-weight: 400;
+    color: var(--text-sub);
+    margin-top: 3px;
+  }
+
+  .progress-bar-bg {
+    width: 100%;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--card-sub);
+    overflow: hidden;
+    margin-top: 12px;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 999px;
+    transition: width 0.25s ease;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 26px 14px;
+    color: var(--text-sub);
+    font-size: 12px;
+  }
+
+  .empty-state-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 5px;
+  }
+
+  /* Bottom Tab Bar */
+  .tab-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid var(--line);
+    z-index: 50;
+  }
+
+  .tab-inner {
+    max-width: 480px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+  }
+
+  .tab-btn {
+    background: none;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 6px 4px;
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .tab-btn.active {
+    color: var(--accent);
+  }
+
+  .tab-icon {
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .view-section {
+    display: none;
+  }
+
+  .view-section.active {
+    display: block;
+  }
+
+  /* Modal */
+  .modal-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 100;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .modal-backdrop.open {
+    display: flex;
+  }
+
+  .modal-sheet {
+    width: 100%;
+    max-width: 480px;
+    background: var(--card);
+    border-radius: 24px 24px 0 0;
+    padding: 22px 20px calc(24px + env(safe-area-inset-bottom));
+    max-height: 88vh;
+    overflow-y: auto;
+    text-align: left;
+  }
+
+  .modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .modal-title {
+    font-size: 16.5px;
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <!-- Header -->
+  <header class="top-header">
+    <div class="header-left">
+      <div class="header-date" id="todayDateLabel"></div>
+      <h1 class="header-title">독서 습관 트래커</h1>
+    </div>
+    <div class="header-right">
+      <div class="streak-pill" id="streakPill">🔥 0일 연속</div>
+      <button class="icon-btn" id="openSettingsModalBtn" title="데이터 관리">⚙️</button>
+    </div>
+  </header>
+
+  <!-- VIEW 1: 오늘 기록 -->
+  <section id="view-today" class="view-section active">
+    <!-- Habit Achievement Banner -->
+    <div class="status-banner" id="todayStatusBanner">
+      <div>
+        <span class="status-badge" id="todayStatusBadge">오늘의 목표</span>
+        <div class="status-heading" id="todayStatusTitle">10분 또는 환산 10p 읽기</div>
+        <div class="status-desc" id="todayStatusDesc">둘 중 하나만 채워도 오늘의 습관이 기록돼요</div>
+      </div>
+      <div class="status-pills">
+        <div class="mini-check" id="checkPagePill">○ 환산 10p</div>
+        <div class="mini-check" id="checkTimePill">○ 독서 10분</div>
+      </div>
+    </div>
+
+    <!-- Card 1: 오늘도 습관 채우기 (기기별 합산 + 선택형 타이머 + 24시간 타임 트래커) -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">오늘도 습관 채우기</div>
+          <div class="card-sub">기기별 환산 페이지 자동 합계 &amp; 선택형 독서 시간 기록</div>
+        </div>
+        <button class="btn btn-soft" id="quickAddBookBtn">+ 책 추가</button>
+      </div>
+
+      <div id="todayActiveBookArea"></div>
+
+      <!-- Optional Timer -->
+      <div class="timer-box">
+        <div class="timer-head">
+          <span class="timer-tag">선택형 타이머 · 10분 이상 시 시간 습관 인정</span>
+          <span class="timer-tag" id="timerDeviceTag">자유 독서</span>
+        </div>
+        <div class="timer-display" id="timerDisplay">00:00</div>
+        <div class="timer-actions">
+          <button class="btn btn-primary" id="timerToggleBtn">타이머 시작</button>
+          <button class="btn btn-ghost" id="timerSaveBtn" disabled>종료 및 기록</button>
+        </div>
+      </div>
+
+      <!-- 24-Hour (00시~23시) Measured 5-Min Time Tracker -->
+      <div class="time-grid-wrap">
+        <div class="time-grid-header">
+          <span class="time-grid-caption">오늘 타임 트래커 (00~23시 · 5분 단위 12칸)</span>
+          <span class="time-grid-caption" id="todayMeasuredMinText">총 0분 측정</span>
+        </div>
+        <div class="time-grid" id="todayTimeGrid"></div>
+      </div>
+    </div>
+
+    <!-- Card 2: 10페이지 분할 그리드 (등록된 책별 개별 접기/펼치기 아코디언) -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">10페이지 분할 그리드</div>
+          <div class="card-sub">책마다 접기/펼치기로 10p 그리드를 개별로 확인하세요</div>
+        </div>
+      </div>
+      <div class="book-accordion-list" id="todayBookAccordionsArea"></div>
+    </div>
+  </section>
+
+  <!-- VIEW 2: 10p 그리드 & 구간 기록 로그 -->
+  <section id="view-grid" class="view-section">
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">전체 10페이지 분할 그리드</div>
+          <div class="card-sub">칸을 누르면 앞선 미완료 칸까지 자동으로 채워집니다</div>
+        </div>
+      </div>
+      <div id="fullPageGridArea"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">구간별 읽기 기록</div>
+          <div class="card-sub">날짜 · 기기 · 소요 시간 로그</div>
+        </div>
+      </div>
+      <div id="segmentLogArea"></div>
+    </div>
+  </section>
+
+  <!-- VIEW 3: 달성 현황 (월간 달력 + 날짜별 상세 타임 트래커) -->
+  <section id="view-stats" class="view-section">
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div class="stat-label">이번 달 달성일</div>
+        <div class="stat-val" id="statAchievedDays">0일</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">이번 달 미달성</div>
+        <div class="stat-val" id="statMissedDays">0일</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">누적 독서 시간</div>
+        <div class="stat-val" id="statTotalHours">0분</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="cal-nav">
+        <button class="icon-btn" id="prevMonthBtn">‹</button>
+        <div class="cal-month-title" id="calMonthLabel"></div>
+        <button class="icon-btn" id="nextMonthBtn">›</button>
+      </div>
+      <div class="cal-weekdays">
+        <div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div>
+      </div>
+      <div class="cal-days" id="calDaysGrid"></div>
+    </div>
+
+    <div class="card" id="selectedDayDetailCard"></div>
+  </section>
+
+  <!-- VIEW 4: 책장 설정 -->
+  <section id="view-books" class="view-section">
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">책장 및 기기 페이지 설정</div>
+          <div class="card-sub">종이책 총페이지를 기준으로 10p 단위가 자동 계산됩니다</div>
+        </div>
+        <button class="btn btn-primary" id="openNewBookModalBtn">+ 새 책 등록</button>
+      </div>
+      <div id="booksListArea"></div>
+    </div>
+  </section>
+</div>
+
+<!-- Bottom Tab Bar -->
+<nav class="tab-bar">
+  <div class="tab-inner">
+    <button class="tab-btn active" data-tab="today">
+      <span class="tab-icon">☀️</span>
+      <span>오늘 기록</span>
+    </button>
+    <button class="tab-btn" data-tab="grid">
+      <span class="tab-icon">🟩</span>
+      <span>10p 그리드</span>
+    </button>
+    <button class="tab-btn" data-tab="stats">
+      <span class="tab-icon">📅</span>
+      <span>달성 현황</span>
+    </button>
+    <button class="tab-btn" data-tab="books">
+      <span class="tab-icon">📚</span>
+      <span>책장 설정</span>
+    </button>
+  </div>
+</nav>
+
+<!-- Modal: 새 책 등록 / 수정 -->
+<div class="modal-backdrop" id="bookModal">
+  <div class="modal-sheet">
+    <div class="modal-head">
+      <div class="modal-title" id="bookModalTitle">새 책 등록</div>
+      <button class="icon-btn" id="closeBookModalBtn">✕</button>
+    </div>
+    <input type="hidden" id="editBookId" />
+
+    <!-- External Book Search (Google Books API) -->
+    <div class="search-panel">
+      <label class="form-label">책 검색으로 제목·총페이지 자동 불러오기</label>
+      <div class="search-row">
+        <input type="text" class="clean-input" id="bookSearchQueryInput" placeholder="책 제목이나 저자 검색" />
+        <button type="button" class="btn btn-soft" id="bookSearchBtn">검색</button>
+      </div>
+      <div class="form-hint" id="bookSearchStatus">Google Books 데이터 기준이며, 불러온 뒤 총페이지는 직접 수정할 수 있어요.</div>
+      <div class="search-results" id="bookSearchResults"></div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">책 제목 (필수)</label>
+      <input type="text" class="clean-input" id="bookTitleInput" placeholder="예: 물고기는 존재하지 않는다" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">종이책 총페이지 (필수 · 기준 10p)</label>
+      <input type="number" class="clean-input" id="paperPagesInput" placeholder="예: 300" min="10" />
+      <div class="form-hint" id="paperPreviewHint">종이책 10페이지 단위로 자동 분할됩니다.</div>
+    </div>
+    <div class="form-group">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+        <label class="form-label" style="margin-bottom:0;">함께 읽는 기기 (선택)</label>
+        <button type="button" class="btn btn-soft" id="addDeviceRowBtn" style="height:30px; font-size:11.5px;">+ 기기 추가</button>
+      </div>
+      <div id="dynamicDeviceRows"></div>
+      <div class="form-hint">스마트폰이나 이북리더기의 총페이지를 넣으면 종이책 10p 분량으로 자동 환산됩니다.</div>
+    </div>
+    <button type="button" class="btn btn-primary btn-full" id="saveBookBtn">저장하기</button>
+  </div>
+</div>
+
+<!-- Modal: 데이터 관리 / 초기화 -->
+<div class="modal-backdrop" id="settingsModal">
+  <div class="modal-sheet">
+    <div class="modal-head">
+      <div class="modal-title">데이터 관리</div>
+      <button class="icon-btn" id="closeSettingsModalBtn">✕</button>
+    </div>
+    <p class="body-text" style="margin-bottom:16px;">
+      모든 기록은 현재 기기 브라우저에 자동 저장됩니다. 처음부터 다시 시작하려면 아래 초기화 버튼을 눌러주세요.
+    </p>
+    <button type="button" class="btn btn-danger-soft btn-full" id="resetAllDataBtn">전체 데이터 초기화</button>
+  </div>
+</div>
+
+<script>
+(function() {
+  const STORAGE_KEY = 'ahreum_reading_habit_v1';
+
+  function getTodayStr() {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
+  function formatKoreanDate(dateStr) {
+    const [y, m, d] = dateStr.split('-').map(Number);
+    const dt = new Date(y, m - 1, d);
+    const days = ['일', '월', '화', '수', '목', '금', '토'];
+    return `${y}년 ${m}월 ${d}일 (${days[dt.getDay()]})`;
+  }
+
+  function createInitialState() {
+    return {
+      books: [],
+      selectedBookId: null,
+      selectedDeviceId: 'paper',
+      expandedBookIds: {}, // { [bookId]: boolean } for per-book accordion on Today view
+      dailyRecords: {},
+      segmentLogs: []
+    };
+  }
+
+  let state = loadState();
+  let timerInterval = null;
+  let timerSeconds = 0;
+  let timerStartTime = null;
+  let calYear = new Date().getFullYear();
+  let calMonth = new Date().getMonth();
+  let selectedStatsDate = getTodayStr();
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return createInitialState();
+      const parsed = JSON.parse(raw);
+      return Object.assign(createInitialState(), parsed);
+    } catch (e) {
+      return createInitialState();
+    }
+  }
+
+  function saveState() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) {}
+  }
+
+  function getActiveBook() {
+    if (!state.books.length) return null;
+    let b = state.books.find(item => item.id === state.selectedBookId);
+    if (!b) {
+      b = state.books[0];
+      state.selectedBookId = b.id;
+    }
+    return b;
+  }
+
+  function getBookDevices(book) {
+    if (!book) return [];
+    const list = [{ id: 'paper', name: '종이책', totalPages: book.paperPages }];
+    if (Array.isArray(book.devices)) {
+      book.devices.forEach(dev => {
+        if (dev && dev.name && Number(dev.totalPages) > 0) {
+          list.push({ id: dev.id, name: dev.name, totalPages: Number(dev.totalPages) });
+        }
+      });
+    }
+    return list;
+  }
+
+  function getActiveDevice(book) {
+    const devs = getBookDevices(book);
+    if (!devs.length) return null;
+    let d = devs.find(item => item.id === state.selectedDeviceId);
+    if (!d) {
+      d = devs[0];
+      state.selectedDeviceId = d.id;
+    }
+    return d;
+  }
+
+  function getTotalBlocks(book) {
+    return Math.max(1, Math.ceil(book.paperPages / 10));
+  }
+
+  function getCellLabel(book, device, blockIndex) {
+    const totalBlocks = getTotalBlocks(book);
+    const ratio = device.totalPages / book.paperPages;
+    if (blockIndex === totalBlocks) {
+      return device.totalPages;
+    }
+    const equivPaper = blockIndex * 10;
+    return Math.max(1, Math.round(equivPaper * ratio));
+  }
+
+  function getGreenLevel(index, total) {
+    if (total <= 1) return 4;
+    const ratio = index / total;
+    if (ratio <= 0.2) return 1;
+    if (ratio <= 0.4) return 2;
+    if (ratio <= 0.65) return 3;
+    if (ratio <= 0.85) return 4;
+    return 5;
+  }
+
+  function ensureDayRecord(dateStr) {
+    if (!state.dailyRecords[dateStr]) {
+      state.dailyRecords[dateStr] = { pageLogs: [], timeSessions: [] };
+    }
+    return state.dailyRecords[dateStr];
+  }
+
+  function getDayStats(dateStr) {
+    const rec = state.dailyRecords[dateStr] || { pageLogs: [], timeSessions: [] };
+    const totalEquivPages = rec.pageLogs.reduce((acc, item) => acc + (item.equivPages || 0), 0);
+    const totalMinutes = rec.timeSessions.reduce((acc, item) => acc + (item.durationMin || 0), 0);
+    const pageAchieved = totalEquivPages >= 10;
+    const timeAchieved = totalMinutes >= 10;
+    return {
+      totalEquivPages,
+      totalMinutes,
+      pageAchieved,
+      timeAchieved,
+      achieved: pageAchieved || timeAchieved,
+      pageLogs: rec.pageLogs,
+      timeSessions: rec.timeSessions
+    };
+  }
+
+  function calculateStreak() {
+    let streak = 0;
+    const cursor = new Date();
+    const todayStr = getTodayStr();
+    if (!getDayStats(todayStr).achieved) {
+      cursor.setDate(cursor.getDate() - 1);
+    }
+    while (true) {
+      const y = cursor.getFullYear();
+      const m = String(cursor.getMonth() + 1).padStart(2, '0');
+      const d = String(cursor.getDate()).padStart(2, '0');
+      const key = `${y}-${m}-${d}`;
+      if (getDayStats(key).achieved) {
+        streak++;
+        cursor.setDate(cursor.getDate() - 1);
+      } else {
+        break;
+      }
+    }
+    return streak;
+  }
+
+  function handleCellTap(bookId, blockIndex) {
+    const book = state.books.find(b => b.id === bookId);
+    if (!book) return;
+    state.selectedBookId = book.id;
+    const device = getActiveDevice(book);
+    const prevBlocks = book.completedBlocks || 0;
+    const todayStr = getTodayStr();
+    const dayRec = ensureDayRecord(todayStr);
+
+    if (blockIndex > prevBlocks) {
+      const addedBlocks = blockIndex - prevBlocks;
+      const equivAdded = addedBlocks * 10;
+      const startPage = prevBlocks === 0 ? 1 : getCellLabel(book, device, prevBlocks);
+      const endPage = getCellLabel(book, device, blockIndex);
+      const rawPagesAdded = prevBlocks === 0 ? endPage : Math.max(1, endPage - startPage);
+
+      book.completedBlocks = blockIndex;
+
+      dayRec.pageLogs.push({
+        bookId: book.id,
+        bookTitle: book.title,
+        deviceName: device.name,
+        rawPages: rawPagesAdded,
+        equivPages: equivAdded
+      });
+
+      state.segmentLogs.unshift({
+        id: 'log_' + Date.now(),
+        bookId: book.id,
+        bookTitle: book.title,
+        date: todayStr,
+        rangeText: `${startPage}p → ${endPage}p`,
+        deviceName: device.name,
+        equivPages: equivAdded,
+        durationMin: null
+      });
+    } else {
+      const targetBlocks = blockIndex - 1;
+      const removedBlocks = prevBlocks - targetBlocks;
+      const equivRemoved = removedBlocks * 10;
+      book.completedBlocks = Math.max(0, targetBlocks);
+
+      let remainToRemove = equivRemoved;
+      for (let i = dayRec.pageLogs.length - 1; i >= 0 && remainToRemove > 0; i--) {
+        if (dayRec.pageLogs[i].bookId === book.id) {
+          const take = Math.min(dayRec.pageLogs[i].equivPages, remainToRemove);
+          dayRec.pageLogs[i].equivPages -= take;
+          remainToRemove -= take;
+          if (dayRec.pageLogs[i].equivPages <= 0) {
+            dayRec.pageLogs.splice(i, 1);
+          }
+        }
+      }
+    }
+
+    saveState();
+    renderAll();
+  }
+
+  function updateTimerUI() {
+    const mins = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
+    const secs = String(timerSeconds % 60).padStart(2, '0');
+    const disp = document.getElementById('timerDisplay');
+    const toggleBtn = document.getElementById('timerToggleBtn');
+    const saveBtn = document.getElementById('timerSaveBtn');
+
+    disp.textContent = `${mins}:${secs}`;
+    if (timerInterval) {
+      disp.classList.add('running');
+      toggleBtn.textContent = '일시정지';
+    } else {
+      disp.classList.remove('running');
+      toggleBtn.textContent = timerSeconds > 0 ? '계속하기' : '타이머 시작';
+    }
+    saveBtn.disabled = timerSeconds < 60;
+  }
+
+  document.getElementById('timerToggleBtn').addEventListener('click', () => {
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    } else {
+      if (!timerStartTime) timerStartTime = new Date();
+      timerInterval = setInterval(() => {
+        timerSeconds++;
+        updateTimerUI();
+      }, 1000);
+    }
+    updateTimerUI();
+  });
+
+  document.getElementById('timerSaveBtn').addEventListener('click', () => {
+    if (timerSeconds < 60) return;
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+    const durationMin = Math.max(1, Math.round(timerSeconds / 60));
+    const startObj = timerStartTime || new Date(Date.now() - timerSeconds * 1000);
+    const todayStr = getTodayStr();
+    const dayRec = ensureDayRecord(todayStr);
+    const book = getActiveBook();
+    const device = book ? getActiveDevice(book) : { name: '종이책' };
+
+    dayRec.timeSessions.push({
+      startHour: startObj.getHours(),
+      startMin: startObj.getMinutes(),
+      durationMin,
+      bookTitle: book ? book.title : '자유 독서',
+      deviceName: device.name
+    });
+
+    if (book && state.segmentLogs.length > 0 && state.segmentLogs[0].bookId === book.id && state.segmentLogs[0].date === todayStr && !state.segmentLogs[0].durationMin) {
+      state.segmentLogs[0].durationMin = durationMin;
+    }
+
+    timerSeconds = 0;
+    timerStartTime = null;
+    updateTimerUI();
+    saveState();
+    renderAll();
+  });
+
+  // Full 24-Hour (00시~23시) 5-Min Time Tracker Grid
+  function renderTimeGrid(containerId, sessions) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    const cellMap = {};
+    sessions.forEach(sess => {
+      const startTotalMin = sess.startHour * 60 + sess.startMin;
+      const blocks = Math.max(1, Math.round(sess.durationMin / 5));
+      const lvl = sess.durationMin >= 30 ? 5 : sess.durationMin >= 20 ? 4 : sess.durationMin >= 10 ? 3 : 2;
+      for (let b = 0; b < blocks; b++) {
+        const curMin = startTotalMin + b * 5;
+        const h = Math.floor(curMin / 60) % 24;
+        const slot = Math.floor((curMin % 60) / 5);
+        cellMap[`${h}-${slot}`] = lvl;
+      }
+    });
+
+    let html = '';
+    for (let h = 0; h <= 23; h++) {
+      html += `<div class="time-row"><div class="time-hour">${String(h).padStart(2, '0')}</div>`;
+      for (let s = 0; s < 12; s++) {
+        const lvl = cellMap[`${h}-${s}`] || 0;
+        html += `<div class="time-cell ${lvl ? 'lvl-' + lvl : ''}"></div>`;
+      }
+      html += `</div>`;
+    }
+    container.innerHTML = html;
+  }
+
+  function buildPageGridHTML(book) {
+    if (!book) {
+      return `
+        <div class="empty-state">
+          <div class="empty-state-title">등록된 책이 없어요</div>
+          <p>상단의 <strong>+ 책 추가</strong> 버튼을 눌러 종이책 총페이지를 입력해 보세요.</p>
+        </div>`;
+    }
+
+    const devices = getBookDevices(book);
+    const activeDev = getActiveDevice(book);
+    const totalBlocks = getTotalBlocks(book);
+    const completed = book.completedBlocks || 0;
+    const stepPages = Math.max(1, Math.round((activeDev.totalPages / book.paperPages) * 10));
+
+    const chipsHTML = devices.map(d => `
+      <button type="button" class="device-chip ${d.id === activeDev.id ? 'active' : ''}" data-select-device="${d.id}">
+        ${d.name} (${d.totalPages}p)
+      </button>
+    `).join('');
+
+    let cellsHTML = '';
+    for (let i = 1; i <= totalBlocks; i++) {
+      const label = getCellLabel(book, activeDev, i);
+      const isFilled = i <= completed;
+      const lvl = isFilled ? getGreenLevel(i, totalBlocks) : 0;
+      cellsHTML += `
+        <button type="button" class="page-cell ${isFilled ? 'filled lvl-' + lvl : ''}" data-book-id="${book.id}" data-block="${i}">
+          ${label}
+        </button>`;
+    }
+
+    return `
+      <div class="device-chips">${chipsHTML}</div>
+      <div class="page-grid-meta">
+        <span><strong>${activeDev.name}</strong> 기준 1칸 ≈ <strong>${stepPages}p</strong> (종이책 10p)</span>
+        <span>${completed} / ${totalBlocks}칸 완료</span>
+      </div>
+      <div class="page-grid">${cellsHTML}</div>
+    `;
+  }
+
+  // Per-Book Accordion List inside "오늘 기록" 10p Grid Card
+  function renderTodayBookAccordions() {
+    const area = document.getElementById('todayBookAccordionsArea');
+    if (!state.books.length) {
+      area.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-title">아직 추가된 책이 없어요</div>
+          <p>책을 등록하면 책마다 접고 펼칠 수 있는 10p 분할 그리드가 생깁니다.</p>
+        </div>`;
+      return;
+    }
+
+    area.innerHTML = state.books.map(book => {
+      const isOpen = !!state.expandedBookIds[book.id];
+      const totalB = getTotalBlocks(book);
+      const doneB = book.completedBlocks || 0;
+      const pct = Math.min(100, Math.round((doneB / totalB) * 100));
+
+      return `
+        <div class="book-accordion-item">
+          <button type="button" class="book-accordion-trigger" data-toggle-book-accordion="${book.id}">
+            <div>
+              <div class="book-accordion-title">${book.title}</div>
+              <div class="book-accordion-meta">${doneB}/${totalB}칸 완료 · ${pct}% · 종이책 ${book.paperPages}p</div>
+            </div>
+            <span class="book-accordion-toggle-label">${isOpen ? '접기 ▲' : '펼치기 ▼'}</span>
+          </button>
+          <div class="book-accordion-body ${isOpen ? 'open' : ''}">
+            ${buildPageGridHTML(book)}
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function renderTodayView() {
+    const todayStr = getTodayStr();
+    document.getElementById('todayDateLabel').textContent = formatKoreanDate(todayStr);
+    document.getElementById('streakPill').textContent = `🔥 ${calculateStreak()}일 연속`;
+
+    const stats = getDayStats(todayStr);
+    const banner = document.getElementById('todayStatusBanner');
+    const badge = document.getElementById('todayStatusBadge');
+    const title = document.getElementById('todayStatusTitle');
+    const desc = document.getElementById('todayStatusDesc');
+    const checkPage = document.getElementById('checkPagePill');
+    const checkTime = document.getElementById('checkTimePill');
+
+    if (stats.achieved) {
+      banner.classList.add('achieved');
+      badge.textContent = '오늘 습관 달성 완료';
+      title.textContent = '오늘의 독서 루틴을 지켰어요!';
+      desc.textContent = `환산 ${stats.totalEquivPages}p · 실제 측정 ${stats.totalMinutes}분 기록됨`;
+    } else {
+      banner.classList.remove('achieved');
+      badge.textContent = '오늘의 목표';
+      title.textContent = '10분 또는 환산 10p 읽기';
+      desc.textContent = '둘 중 하나만 채워도 오늘의 습관이 기록돼요';
+    }
+
+    checkPage.className = 'mini-check' + (stats.pageAchieved ? ' done' : '');
+    checkPage.textContent = `${stats.pageAchieved ? '●' : '○'} 환산 ${stats.totalEquivPages}/10p`;
+    checkTime.className = 'mini-check' + (stats.timeAchieved ? ' done' : '');
+    checkTime.textContent = `${stats.timeAchieved ? '●' : '○'} 독서 ${stats.totalMinutes}/10분`;
+
+    const activeBook = getActiveBook();
+    const area = document.getElementById('todayActiveBookArea');
+
+    if (!activeBook) {
+      area.innerHTML = `
+        <div class="equiv-box">
+          <div class="equiv-top">
+            <span class="equiv-label">오늘 읽은 책이 아직 없어요</span>
+            <span class="equiv-value">0p</span>
+          </div>
+          <div class="equiv-breakdown">우측 상단 <strong>+ 책 추가</strong>를 눌러 종이책 총페이지를 등록하면 기기별 10p 자동 환산이 시작됩니다.</div>
+        </div>`;
+      document.getElementById('timerDeviceTag').textContent = '자유 독서';
+    } else {
+      const bookOptions = state.books.map(b => `<option value="${b.id}" ${b.id === activeBook.id ? 'selected' : ''}>${b.title}</option>`).join('');
+      const devices = getBookDevices(activeBook);
+      const activeDev = getActiveDevice(activeBook);
+      document.getElementById('timerDeviceTag').textContent = `${activeBook.title} · ${activeDev.name}`;
+
+      const deviceSummaryMap = {};
+      stats.pageLogs.forEach(log => {
+        if (!deviceSummaryMap[log.deviceName]) {
+          deviceSummaryMap[log.deviceName] = { raw: 0, equiv: 0 };
+        }
+        deviceSummaryMap[log.deviceName].raw += log.rawPages;
+        deviceSummaryMap[log.deviceName].equiv += log.equivPages;
+      });
+
+      const breakdownEntries = Object.entries(deviceSummaryMap);
+      const breakdownText = breakdownEntries.length
+        ? breakdownEntries.map(([devName, val]) => `${devName} ${val.raw}p (환산 ${val.equiv}p)`).join(' + ')
+        : '오늘 기록된 페이지가 없습니다. 아래 그리드 칸을 눌러 기록해 보세요.';
+
+      const devChips = devices.map(d => `
+        <button type="button" class="device-chip ${d.id === activeDev.id ? 'active' : ''}" data-select-device="${d.id}">
+          ${d.name}
+        </button>`).join('');
+
+      area.innerHTML = `
+        <div class="book-select-bar">
+          <div class="select-wrap">
+            <select class="clean-select" id="todayBookSelect">${bookOptions}</select>
+          </div>
+        </div>
+        <div class="device-chips">${devChips}</div>
+        <div class="equiv-box">
+          <div class="equiv-top">
+            <span class="equiv-label">오늘 자동 환산 합계 (종이책 기준)</span>
+            <span class="equiv-value">${stats.totalEquivPages}p</span>
+          </div>
+          <div class="equiv-breakdown">${breakdownText}</div>
+        </div>`;
+
+      document.getElementById('todayBookSelect').addEventListener('change', (e) => {
+        state.selectedBookId = e.target.value;
+        saveState();
+        renderAll();
+      });
+    }
+
+    document.getElementById('todayMeasuredMinText').textContent = `총 ${stats.totalMinutes}분 측정`;
+    renderTimeGrid('todayTimeGrid', stats.timeSessions);
+    renderTodayBookAccordions();
+  }
+
+  function renderGridView() {
+    const activeBook = getActiveBook();
+    const area = document.getElementById('fullPageGridArea');
+
+    if (!activeBook) {
+      area.innerHTML = buildPageGridHTML(null);
+    } else {
+      const bookOptions = state.books.map(b => `<option value="${b.id}" ${b.id === activeBook.id ? 'selected' : ''}>${b.title}</option>`).join('');
+      area.innerHTML = `
+        <div class="book-select-bar">
+          <div class="select-wrap">
+            <select class="clean-select" id="fullGridBookSelect">${bookOptions}</select>
+          </div>
+        </div>
+        ${buildPageGridHTML(activeBook)}
+      `;
+      document.getElementById('fullGridBookSelect').addEventListener('change', (e) => {
+        state.selectedBookId = e.target.value;
+        saveState();
+        renderAll();
+      });
+    }
+
+    const logArea = document.getElementById('segmentLogArea');
+    const logs = activeBook ? state.segmentLogs.filter(l => l.bookId === activeBook.id) : [];
+    if (!logs.length) {
+      logArea.innerHTML = `<div class="empty-state">아직 기록된 구간 로그가 없어요. 위 칸을 눌러 첫 10페이지를 채워보세요!</div>`;
+    } else {
+      logArea.innerHTML = `<div class="log-list">` + logs.map(item => `
+        <div class="log-item">
+          <div>
+            <div class="log-main">${item.rangeText} · ${item.deviceName}</div>
+            <div class="log-sub">${formatKoreanDate(item.date)}${item.durationMin ? ` · ${item.durationMin}분 소요` : ''}</div>
+          </div>
+          <span class="log-badge">+${item.equivPages}p 환산</span>
+        </div>
+      `).join('') + `</div>`;
+    }
+  }
+
+  function renderStatsView() {
+    document.getElementById('calMonthLabel').textContent = `${calYear}년 ${calMonth + 1}월`;
+    const firstDay = new Date(calYear, calMonth, 1).getDay();
+    const lastDate = new Date(calYear, calMonth + 1, 0).getDate();
+    const todayObj = new Date();
+    const isCurrentMonth = todayObj.getFullYear() === calYear && todayObj.getMonth() === calMonth;
+    const elapsedDays = isCurrentMonth ? todayObj.getDate() : lastDate;
+
+    let achievedCount = 0;
+    let totalMonthMin = 0;
+    let daysHTML = '';
+
+    for (let e = 0; e < firstDay; e++) {
+      daysHTML += `<div class="cal-day empty"></div>`;
+    }
+
+    for (let d = 1; d <= lastDate; d++) {
+      const dateStr = `${calYear}-${String(calMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      const st = getDayStats(dateStr);
+      totalMonthMin += st.totalMinutes;
+      if (d <= elapsedDays && st.achieved) achievedCount++;
+
+      const levelClass = (st.pageAchieved && st.timeAchieved) ? 'achieved-2' : st.achieved ? 'achieved-1' : '';
+      const selClass = dateStr === selectedStatsDate ? 'selected' : '';
+      daysHTML += `
+        <button type="button" class="cal-day ${levelClass} ${selClass}" data-cal-date="${dateStr}">
+          <span class="cal-day-num">${d}</span>
+          <span class="cal-dot"></span>
+        </button>`;
+    }
+
+    document.getElementById('calDaysGrid').innerHTML = daysHTML;
+    document.getElementById('statAchievedDays').textContent = `${achievedCount}일`;
+    document.getElementById('statMissedDays').textContent = `${Math.max(0, elapsedDays - achievedCount)}일`;
+    document.getElementById('statTotalHours').textContent = totalMonthMin >= 60
+      ? `${Math.floor(totalMonthMin / 60)}시간 ${totalMonthMin % 60}분`
+      : `${totalMonthMin}분`;
+
+    const detailCard = document.getElementById('selectedDayDetailCard');
+    const selStats = getDayStats(selectedStatsDate);
+    const booksReadSet = [...new Set(selStats.pageLogs.map(l => l.bookTitle))];
+
+    let logsHTML = '';
+    if (selStats.pageLogs.length) {
+      logsHTML = `<div class="log-list" style="margin-bottom:14px;">` + selStats.pageLogs.map(l => `
+        <div class="log-item">
+          <div>
+            <div class="log-main">${l.bookTitle}</div>
+            <div class="log-sub">${l.deviceName} ${l.rawPages}p 읽음</div>
+          </div>
+          <span class="log-badge">환산 ${l.equivPages}p</span>
+        </div>
+      `).join('') + `</div>`;
+    } else {
+      logsHTML = `<p class="body-text" style="margin-bottom:14px;">이날 기록된 페이지 내역이 없습니다.</p>`;
+    }
+
+    detailCard.innerHTML = `
+      <div class="card-header">
+        <div>
+          <div class="card-title">${formatKoreanDate(selectedStatsDate)}</div>
+          <div class="card-sub">${selStats.achieved ? '습관 달성 완료' : '미달성일'} · 환산 ${selStats.totalEquivPages}p · 측정 ${selStats.totalMinutes}분</div>
+        </div>
+      </div>
+      ${booksReadSet.length ? `<div class="body-text" style="font-weight:600; color:var(--accent); margin-bottom:10px;">읽은 책: ${booksReadSet.join(', ')}</div>` : ''}
+      ${logsHTML}
+      <div class="time-grid-header">
+        <span class="time-grid-caption">이날 타임 트래커 (00~23시)</span>
+        <span class="time-grid-caption">${selStats.totalMinutes}분</span>
+      </div>
+      <div class="time-grid" id="detailDayTimeGrid"></div>
+    `;
+    renderTimeGrid('detailDayTimeGrid', selStats.timeSessions);
+  }
+
+  function renderBooksView() {
+    const area = document.getElementById('booksListArea');
+    if (!state.books.length) {
+      area.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-title">책장이 비어 있어요</div>
+          <p>우측 상단 <strong>+ 새 책 등록</strong>을 눌러 종이책 총페이지를 입력해 주세요.</p>
+        </div>`;
+      return;
+    }
+
+    area.innerHTML = state.books.map(book => {
+      const totalB = getTotalBlocks(book);
+      const doneB = book.completedBlocks || 0;
+      const pct = Math.min(100, Math.round((doneB / totalB) * 100));
+      const devs = getBookDevices(book);
+      const devDesc = devs.map(d => `${d.name} ${d.totalPages}p`).join(' · ');
+
+      return `
+        <div class="book-card-item">
+          <div class="book-item-top">
+            <div>
+              <div class="book-item-title">${book.title}</div>
+              <div class="book-item-meta">${devDesc}</div>
+              <div class="book-item-meta">진행률 ${pct}% (${doneB}/${totalB}칸)</div>
+            </div>
+            <div style="display:flex; gap:6px;">
+              <button type="button" class="btn btn-ghost" data-edit-book="${book.id}" style="height:30px; padding:0 10px; font-size:11.5px;">수정</button>
+              <button type="button" class="btn btn-danger-soft" data-delete-book="${book.id}" style="height:30px; padding:0 10px; font-size:11.5px;">삭제</button>
+            </div>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" style="width:${pct}%"></div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function renderAll() {
+    renderTodayView();
+    renderGridView();
+    renderStatsView();
+    renderBooksView();
+  }
+
+  document.addEventListener('click', (e) => {
+    // Tab switching
+    const tabBtn = e.target.closest('.tab-btn');
+    if (tabBtn) {
+      const target = tabBtn.dataset.tab;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      tabBtn.classList.add('active');
+      document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+      document.getElementById(`view-${target}`).classList.add('active');
+      return;
+    }
+
+    // Per-book accordion toggle on Today view
+    const accBtn = e.target.closest('[data-toggle-book-accordion]');
+    if (accBtn) {
+      const bookId = accBtn.dataset.toggleBookAccordion;
+      state.expandedBookIds[bookId] = !state.expandedBookIds[bookId];
+      state.selectedBookId = bookId;
+      saveState();
+      renderTodayBookAccordions();
+      return;
+    }
+
+    // Device chip selection
+    const devChip = e.target.closest('[data-select-device]');
+    if (devChip) {
+      state.selectedDeviceId = devChip.dataset.selectDevice;
+      saveState();
+      renderAll();
+      return;
+    }
+
+    // 10p Grid cell tap
+    const pageCell = e.target.closest('.page-cell');
+    if (pageCell) {
+      const bookId = pageCell.dataset.bookId;
+      const blockIndex = Number(pageCell.dataset.block);
+      handleCellTap(bookId, blockIndex);
+      return;
+    }
+
+    // Calendar date tap
+    const calDay = e.target.closest('[data-cal-date]');
+    if (calDay) {
+      selectedStatsDate = calDay.dataset.calDate;
+      renderStatsView();
+      return;
+    }
+
+    // Edit book
+    const editBtn = e.target.closest('[data-edit-book]');
+    if (editBtn) {
+      openBookModal(editBtn.dataset.editBook);
+      return;
+    }
+
+    // Delete book
+    const delBtn = e.target.closest('[data-delete-book]');
+    if (delBtn) {
+      const id = delBtn.dataset.deleteBook;
+      state.books = state.books.filter(b => b.id !== id);
+      delete state.expandedBookIds[id];
+      if (state.selectedBookId === id) state.selectedBookId = state.books[0] ? state.books[0].id : null;
+      saveState();
+      renderAll();
+      return;
+    }
+  });
+
+  // Calendar Month Navigation
+  document.getElementById('prevMonthBtn').addEventListener('click', () => {
+    calMonth--;
+    if (calMonth < 0) { calMonth = 11; calYear--; }
+    renderStatsView();
+  });
+
+  document.getElementById('nextMonthBtn').addEventListener('click', () => {
+    calMonth++;
+    if (calMonth > 11) { calMonth = 0; calYear++; }
+    renderStatsView();
+  });
+
+  // Google Books Lookup inside Book Modal
+  const bookSearchQueryInput = document.getElementById('bookSearchQueryInput');
+  const bookSearchBtn = document.getElementById('bookSearchBtn');
+  const bookSearchStatus = document.getElementById('bookSearchStatus');
+  const bookSearchResults = document.getElementById('bookSearchResults');
+
+  async function searchGoogleBooks() {
+    const q = bookSearchQueryInput.value.trim();
+    if (!q) {
+      bookSearchStatus.textContent = '검색할 책 제목을 입력해 주세요.';
+      return;
+    }
+    bookSearchStatus.textContent = '검색 중...';
+    bookSearchResults.innerHTML = '';
+
+    try {
+      const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(q)}&maxResults=6&printType=books`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('network');
+      const data = await res.json();
+      const items = Array.isArray(data.items) ? data.items : [];
+
+      if (!items.length) {
+        bookSearchStatus.textContent = '검색 결과가 없어요. 아래 입력칸에 직접 적어 주세요.';
+        return;
+      }
+
+      bookSearchStatus.textContent = '원하는 책을 누르면 제목과 페이지 수가 입력칸에 들어가요.';
+      bookSearchResults.innerHTML = items.map((item, idx) => {
+        const info = item.volumeInfo || {};
+        const title = info.title || '제목 없음';
+        const authors = Array.isArray(info.authors) ? info.authors.join(', ') : '저자 미상';
+        const pages = info.pageCount && info.pageCount >= 10 ? info.pageCount : '';
+        return `
+          <button type="button" class="search-item" data-search-idx="${idx}">
+            <div>
+              <div class="search-item-title">${title}</div>
+              <div class="search-item-meta">${authors}</div>
+            </div>
+            <div class="search-item-pages">${pages ? pages + 'p' : '페이지 미기재'}</div>
+          </button>`;
+      }).join('');
+
+      bookSearchResults.querySelectorAll('.search-item').forEach((btn, idx) => {
+        btn.addEventListener('click', () => {
+          const info = items[idx].volumeInfo || {};
+          document.getElementById('bookTitleInput').value = info.title || '';
+          if (info.pageCount && info.pageCount >= 10) {
+            document.getElementById('paperPagesInput').value = info.pageCount;
+          } else {
+            document.getElementById('paperPagesInput').value = '';
+            document.getElementById('paperPagesInput').focus();
+          }
+          updatePaperHint();
+          bookSearchResults.innerHTML = '';
+          bookSearchStatus.textContent = '불러왔어요! 필요하면 종이책 총페이지를 직접 수정할 수 있어요.';
+        });
+      });
+    } catch (err) {
+      bookSearchStatus.textContent = '외부 검색 연결이 원활하지 않아요. 아래에 직접 입력해 주세요.';
+    }
+  }
+
+  bookSearchBtn.addEventListener('click', searchGoogleBooks);
+  bookSearchQueryInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      searchGoogleBooks();
+    }
+  });
+
+  // Book Modal Logic
+  const bookModal = document.getElementById('bookModal');
+  const dynamicDeviceRows = document.getElementById('dynamicDeviceRows');
+
+  function addDeviceInputRow(name = '', pages = '') {
+    const row = document.createElement('div');
+    row.className = 'device-row';
+    row.innerHTML = `
+      <input type="text" class="clean-input dev-name-input" placeholder="기기명 (예: 스마트폰)" value="${name}" />
+      <input type="number" class="clean-input dev-pages-input" placeholder="총페이지" min="10" value="${pages}" />
+      <button type="button" class="btn btn-danger-soft remove-dev-btn" style="height:38px; padding:0 11px;">삭제</button>
+    `;
+    row.querySelector('.remove-dev-btn').addEventListener('click', () => row.remove());
+    dynamicDeviceRows.appendChild(row);
+  }
+
+  function openBookModal(bookId = null) {
+    dynamicDeviceRows.innerHTML = '';
+    bookSearchQueryInput.value = '';
+    bookSearchResults.innerHTML = '';
+    bookSearchStatus.textContent = 'Google Books 데이터 기준이며, 불러온 뒤 총페이지는 직접 수정할 수 있어요.';
+
+    if (bookId) {
+      const book = state.books.find(b => b.id === bookId);
+      if (!book) return;
+      document.getElementById('bookModalTitle').textContent = '책 정보 수정';
+      document.getElementById('editBookId').value = book.id;
+      document.getElementById('bookTitleInput').value = book.title;
+      document.getElementById('paperPagesInput').value = book.paperPages;
+      (book.devices || []).forEach(d => addDeviceInputRow(d.name, d.totalPages));
+    } else {
+      document.getElementById('bookModalTitle').textContent = '새 책 등록';
+      document.getElementById('editBookId').value = '';
+      document.getElementById('bookTitleInput').value = '';
+      document.getElementById('paperPagesInput').value = '';
+    }
+    updatePaperHint();
+    bookModal.classList.add('open');
+  }
+
+  function updatePaperHint() {
+    const val = Number(document.getElementById('paperPagesInput').value);
+    const hint = document.getElementById('paperPreviewHint');
+    if (val >= 10) {
+      const blocks = Math.ceil(val / 10);
+      hint.textContent = `종이책 10p 단위로 총 ${blocks}칸의 그리드가 생성됩니다.`;
+    } else {
+      hint.textContent = '종이책 10페이지 단위로 자동 분할됩니다.';
+    }
+  }
+
+  document.getElementById('paperPagesInput').addEventListener('input', updatePaperHint);
+  document.getElementById('addDeviceRowBtn').addEventListener('click', () => addDeviceInputRow());
+  document.getElementById('openNewBookModalBtn').addEventListener('click', () => openBookModal(null));
+  document.getElementById('quickAddBookBtn').addEventListener('click', () => openBookModal(null));
+  document.getElementById('closeBookModalBtn').addEventListener('click', () => bookModal.classList.remove('open'));
+
+  document.getElementById('saveBookBtn').addEventListener('click', () => {
+    const title = document.getElementById('bookTitleInput').value.trim();
+    const paperPages = Number(document.getElementById('paperPagesInput').value);
+    if (!title || !paperPages || paperPages < 10) {
+      alert('책 제목과 종이책 총페이지(10p 이상)를 입력해 주세요.');
+      return;
+    }
+
+    const devices = [];
+    dynamicDeviceRows.querySelectorAll('.device-row').forEach((row, idx) => {
+      const dName = row.querySelector('.dev-name-input').value.trim();
+      const dPages = Number(row.querySelector('.dev-pages-input').value);
+      if (dName && dPages >= 10) {
+        devices.push({ id: `dev_${Date.now()}_${idx}`, name: dName, totalPages: dPages });
+      }
+    });
+
+    const editId = document.getElementById('editBookId').value;
+    if (editId) {
+      const book = state.books.find(b => b.id === editId);
+      if (book) {
+        book.title = title;
+        book.paperPages = paperPages;
+        book.devices = devices;
+        const maxBlocks = getTotalBlocks(book);
+        if ((book.completedBlocks || 0) > maxBlocks) book.completedBlocks = maxBlocks;
+      }
+    } else {
+      const newBook = {
+        id: 'book_' + Date.now(),
+        title,
+        paperPages,
+        devices,
+        completedBlocks: 0
+      };
+      state.books.push(newBook);
+      state.selectedBookId = newBook.id;
+      state.selectedDeviceId = 'paper';
+      state.expandedBookIds[newBook.id] = true;
+    }
+
+    saveState();
+    bookModal.classList.remove('open');
+    renderAll();
+  });
+
+  // Settings Modal
+  const settingsModal = document.getElementById('settingsModal');
+  document.getElementById('openSettingsModalBtn').addEventListener('click', () => settingsModal.classList.add('open'));
+  document.getElementById('closeSettingsModalBtn').addEventListener('click', () => settingsModal.classList.remove('open'));
+  document.getElementById('resetAllDataBtn').addEventListener('click', () => {
+    if (confirm('모든 책과 독서 기록을 초기화할까요?')) {
+      state = createInitialState();
+      saveState();
+      settingsModal.classList.remove('open');
+      renderAll();
+    }
+  });
+
+  renderAll();
+})();
+</script>
+</body>
+</html>
